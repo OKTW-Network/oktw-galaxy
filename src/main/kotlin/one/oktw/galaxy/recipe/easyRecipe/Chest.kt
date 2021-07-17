@@ -1,6 +1,6 @@
 /*
  * OKTW Galaxy Project
- * Copyright (C) 2018-2021
+ * Copyright (C) 2018-2020
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package one.oktw.galaxy.recipe.tools
+package one.oktw.galaxy.recipe.easyRecipe
 
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
@@ -24,27 +24,26 @@ import net.minecraft.inventory.CraftingInventory
 import net.minecraft.item.Items
 import net.minecraft.recipe.CraftingRecipe
 import net.minecraft.recipe.RecipeSerializer
+import net.minecraft.tag.ItemTags
 import net.minecraft.util.Identifier
 import net.minecraft.world.World
-import one.oktw.galaxy.item.Tool
 import one.oktw.galaxy.recipe.utils.Ingredient
 import one.oktw.galaxy.recipe.utils.RecipeUtils
 
-class Wrench : CraftingRecipe {
-    private val item = Tool.WRENCH.createItemStack()
+class Chest : CraftingRecipe {
+    private val item = Items.CHEST.defaultStack.apply { this.count = 4 }
 
+    private val logs = Ingredient(tag = ItemTags.LOGS)
     private val air = Ingredient(items = listOf(Items.AIR))
-    private val ironIngot = Ingredient(items = listOf(Items.IRON_INGOT))
-    private val stick = Ingredient(items = listOf(Items.STICK))
     private val list = listOf(
-        ironIngot, air, ironIngot,
-        air, stick, air,
-        air, ironIngot, air
+        logs, logs, logs,
+        logs, air, logs,
+        logs, logs, logs
     )
 
-    override fun matches(inv: CraftingInventory, world: World): Boolean = RecipeUtils.isItemShapedMatches(inv, 3, 3, list = list)
+    override fun matches(inv: CraftingInventory, world: World): Boolean = RecipeUtils.isItemShapedMatches(inv, 3, 3, list)
 
-    override fun craft(inv: CraftingInventory) = Tool.WRENCH.createItemStack()
+    override fun craft(inv: CraftingInventory) = item.copy()
 
     @Environment(EnvType.CLIENT)
     override fun fits(width: Int, height: Int): Boolean {
@@ -53,7 +52,7 @@ class Wrench : CraftingRecipe {
 
     override fun getOutput() = item
 
-    override fun getId() = Identifier("galaxy", "item/wrench")
+    override fun getId() = Identifier("galaxy", "easy_recipe/chest")
 
     override fun getSerializer(): RecipeSerializer<*> {
         TODO("Not yet implemented, support client mod.")

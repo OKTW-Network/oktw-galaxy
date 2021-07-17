@@ -26,7 +26,6 @@ import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
-import net.minecraft.recipe.RecipeType
 import net.minecraft.server.dedicated.MinecraftDedicatedServer
 import net.minecraft.util.Identifier
 import one.oktw.galaxy.block.CustomBlock
@@ -41,11 +40,10 @@ import one.oktw.galaxy.command.commands.Spawn
 import one.oktw.galaxy.event.EventManager
 import one.oktw.galaxy.event.type.ProxyResponseEvent
 import one.oktw.galaxy.item.event.CustomItemEventHandler
-import one.oktw.galaxy.mixin.interfaces.CustomRecipeManager
 import one.oktw.galaxy.player.Harvest
 import one.oktw.galaxy.player.Sign
 import one.oktw.galaxy.proxy.api.ProxyAPI
-import one.oktw.galaxy.recipe.tools.Wrench
+import one.oktw.galaxy.recipe.RecipeRegistry
 import one.oktw.galaxy.resourcepack.ResourcePack
 import java.util.*
 
@@ -80,7 +78,7 @@ class Main : DedicatedServerModInitializer {
         CustomBlock
 
         // Recipe
-        CustomRecipeManager.addRecipe(RecipeType.CRAFTING, Wrench())
+        RecipeRegistry.register()
 
         ServerLifecycleEvents.SERVER_STARTING.register(ServerLifecycleEvents.ServerStarting {
             server = it as MinecraftDedicatedServer
