@@ -33,6 +33,7 @@ import one.oktw.galaxy.block.CustomBlock
 import one.oktw.galaxy.block.event.AngelBlock
 import one.oktw.galaxy.block.event.BlockEvents
 import one.oktw.galaxy.block.event.Elevator
+import one.oktw.galaxy.block.vanilla.dispenser.DispenserPlant
 import one.oktw.galaxy.chat.Exchange
 import one.oktw.galaxy.command.commands.Admin
 import one.oktw.galaxy.command.commands.Home
@@ -110,6 +111,9 @@ class Main : DedicatedServerModInitializer {
             eventManager.register(Elevator())
             eventManager.register(AngelBlock())
             eventManager.register(CustomItemEventHandler())
+
+            //DispenserPlant
+            DispenserPlant.register()
         })
 
         // server.log("current server id is $selfUID
