@@ -18,7 +18,7 @@
 
 package one.oktw.galaxy.item
 
-import net.minecraft.item.Items.COMMAND_BLOCK
+import net.minecraft.item.Items.BAT_SPAWN_EGG
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
@@ -27,7 +27,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.MathHelper
 
 class Tool private constructor(id: String, modelData: Int, private val name: String) :
-    CustomItem(Identifier("galaxy", "item/tool/$id"), COMMAND_BLOCK, modelData) {
+    CustomItem(Identifier("galaxy", "item/tool/$id"), BAT_SPAWN_EGG, modelData) {
     override val cacheable = false
 
     companion object {

@@ -48,7 +48,7 @@ class Wrench {
 
         if (!player.isSneaking) return
 
-        if (CustomItemHelper.getItem(event.context.stack) == Tool.WRENCH && wrenchSpin(event)) event.swing = true
+        wrenchSpin(event)
     }
 
     @EventListener(true)
