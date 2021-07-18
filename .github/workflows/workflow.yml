@@ -44,6 +44,9 @@ jobs:
       USERNAME: ${{ secrets.OKTW_HARBOR_USERNAME }}
       PASSWORD: ${{ secrets.OKTW_HARBOR_PASSWORD }}
     steps:
+      - name: Env
+        shell: bash
+        run: echo IMAGE_TAG=$([ "$GITHUB_REF" = "refs/heads/master" ] && echo "latest" || [ "$GITHUB_EVENT_NAME" = 'pull_request' ] && echo pr-${{github.event.pull_request.number}} || echo ${GITHUB_REF##*/}) >> $GITHUB_ENV
       - name: Checkout
         uses: actions/checkout@v2
       - name: Checkout submodules
@@ -57,30 +60,25 @@ jobs:
           name: jar
           path: docker/mods/Galaxy.jar
       - name: login
-        if: github.event_name == 'push' && env.USERNAME != '' && env.PASSWORD != ''
+        if: env.USERNAME != '' && env.PASSWORD != ''
         uses: azure/docker-login@v1
         with:
           login-server: harbor.k8s.oktw.one
           username: ${{ secrets.OKTW_HARBOR_USERNAME }}
           password: ${{ secrets.OKTW_HARBOR_PASSWORD }}
       - name: pull cache
-        if: github.event_name == 'push'
         run: |
           docker pull $REGISTRY_IMAGE:build-cache || true
           docker pull $REGISTRY_IMAGE:latest || true
       - name: build cache
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master'
         working-directory: ./docker
         run: |
           docker build --pull --cache-from $REGISTRY_IMAGE:build-cache -t $REGISTRY_IMAGE:build-cache --target builder .
           docker push $REGISTRY_IMAGE:build-cache
       - name: build
         working-directory: ./docker
-        run: |
-          REF_SLUG=$([ "$GITHUB_REF" = "refs/heads/master" ] && echo "latest" || echo ${GITHUB_REF##*/})
-          docker build --cache-from $REGISTRY_IMAGE:build-cache --cache-from $REGISTRY_IMAGE:latest -t $REGISTRY_IMAGE:$REF_SLUG .
+        run: docker build --cache-from $REGISTRY_IMAGE:build-cache --cache-from $REGISTRY_IMAGE:latest -t $REGISTRY_IMAGE:$IMAGE_TAG .
       - name: push
-        if: github.event_name == 'push' && env.USERNAME != '' && env.PASSWORD != ''
-        run: |
-          REF_SLUG=$([ "$GITHUB_REF" = "refs/heads/master" ] && echo "latest" || echo ${GITHUB_REF##*/})
-          docker push $REGISTRY_IMAGE:$REF_SLUG
+        if: env.USERNAME != '' && env.PASSWORD != ''
+        run: docker push $REGISTRY_IMAGE:$IMAGE_TAG
